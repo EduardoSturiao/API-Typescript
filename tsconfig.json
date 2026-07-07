@@ -3,7 +3,7 @@
   "compilerOptions": {
     // File Layout
     // "rootDir": "./src",
-    "outDir": "./dist",
+    "outDir": "./dist",  // tudo que for transformado em JS caira numa pasta ./dist
     "allowImportingTsExtensions": true, // deixa o tsc aceitar import com .ts sem reclamar
     "rewriteRelativeImportExtensions": true, // quando você compilar de verdade (tsc → dist/), ele reescreve pra .js sozinho
 
