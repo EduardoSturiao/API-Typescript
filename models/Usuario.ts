@@ -1,0 +1,32 @@
+import mongoose from "mongoose";
+import bcrypt from "bcrypt"
+
+export interface IUsuario {
+  nome: string;
+  email: string;
+  senha: string;
+}
+
+const UsuarioSchema = new mongoose.Schema({
+  nome: {
+    type: String,
+    required: [true, "Nome é obrigatório"],
+  },
+  email: {
+    type: String,
+    required: [true, "Email é obrigatório"],
+    unique: true
+  },
+  senha: {
+    type: String,
+    required: [true, "Senha é obrigatório"],
+  }, 
+});
+
+
+//HOOKS
+
+export default mongoose.model<IUsuario>('Usuario', UsuarioSchema)
+
+
+
