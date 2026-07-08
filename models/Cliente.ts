@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Query } from "mongoose";
 
 interface ICliente {
   nome: string;
@@ -18,6 +18,11 @@ const ClienteSchema = new mongoose.Schema<ICliente>({
 
 
 //HOOKS
+
+ClienteSchema.pre('findOneAndDelete', async function(this: Query<any, ICliente>){
+    const clienteId = this.getQuery()._id
+    await mongoose.model('VendaMensal').deleteMany({cliente: clienteId})
+})
 
 
 export default mongoose.model<ICliente>('Cliente', ClienteSchema)
