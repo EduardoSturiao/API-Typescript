@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { type HydratedDocument } from "mongoose";
 import bcrypt from "bcrypt"
 
 export interface IUsuario {
@@ -26,10 +26,14 @@ const UsuarioSchema = new mongoose.Schema({
 
 //HOOKS
 
-UsuarioSchema.pre('save', async function(){
+UsuarioSchema.pre('save', async function(this: HydratedDocument<IUsuario>){
   if(!this.isModified('senha')) return
   this.senha = await bcrypt.hash(this.senha, 10)
 })
+
+
+
+
 
 export default mongoose.model<IUsuario>('Usuario', UsuarioSchema)
 

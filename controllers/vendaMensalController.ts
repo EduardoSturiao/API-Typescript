@@ -70,6 +70,19 @@ export const atualizar = async (req: Request, res: Response) => {
   }
 };
 
+export const criar = async (req: Request, res: Response) => {
+  try {
+    const novaVendaMensal = await VendaMensal.create(req.body);
+    res.json(novaVendaMensal);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).json({ mensagem: error.message });
+    } else {
+      res.status(400).json({ mensagem: "Erro desconhecido" });
+    }
+  }
+};
+
 export const deletar = async (req: Request, res: Response) => {
   try {
     const vendaMensalExcluida = await VendaMensal.findByIdAndDelete(
