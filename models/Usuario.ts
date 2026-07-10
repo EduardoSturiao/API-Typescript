@@ -20,6 +20,7 @@ const UsuarioSchema = new mongoose.Schema({
   senha: {
     type: String,
     required: [true, "Senha é obrigatório"],
+    select: false
   }, 
 });
 

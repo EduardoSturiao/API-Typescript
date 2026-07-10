@@ -6,3 +6,5 @@ router.get('/', controller.allVendas)
 router.post('/', controller.criar) 
 router.put('/:id', controller.atualizar)
 router.delete('/:id', controller.deletar)
+
+export default router
