@@ -17,6 +17,11 @@ const VendaMensalSchema = new mongoose.Schema({
     required: [true, "Valor é obrigatório"],
     min: [0, "O valor não pode ser negativo"],
   },
+  cliente: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Cliente',
+    required: [true, 'Cliente obrigatório']
+  }
 });
 
 //HOOKS

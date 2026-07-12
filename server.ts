@@ -22,7 +22,7 @@ app.get('/', (req: Request, res: Response)=> res.send('Bem vindo ao banco de dad
 const startServer = async()=>{
   await connectDB()
 
-  app.listen(port, ()=> console.log('Server initialized: http://localhost:${port}'))
+  app.listen(port, ()=> console.log(`Server initialized: http://localhost:${port}`))
 }
 
 startServer()
