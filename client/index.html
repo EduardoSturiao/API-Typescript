@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <main id="container">
+        <form class="formulario" action="" method="POST">
+            <h1>Entrar</h1>
+
+            <div class="campo">
+                <label for="usuario">Usuário</label>
+                <input type="text" id="usuario" name="usuario" autocomplete="username" required>
+            </div>
+
+            <div class="campo">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" autocomplete="current-password" required>
+            </div>
+
+            <p id="erro" class="erro" role="alert"></p>
+
+            <button type="submit">Entrar</button>
+
+            <p class="rodape">Não tem conta? <a href="#">Cadastre-se</a></p>
+        </form>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

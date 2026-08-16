@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste API</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <p class="marca">Teste API</p>
+
+            <nav class="nav">
+                <button class="nav-item ativo" data-secao="clientes">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    Clientes
+                </button>
+
+                <button class="nav-item" data-secao="usuarios">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    Usuarios
+                </button>
+
+                <button class="nav-item" data-secao="vendas">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" />
+                        <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
+                        <path d="M12 17.5v-11" />
+                    </svg>
+                    Vendas
+                </button>
+            </nav>
+        </aside>
+
+        <main class="conteudo">
+            <div class="topo">
+                <button class="menu-botao" id="menuBotao" aria-label="Opções">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round">
+                        <circle cx="5" cy="12" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="19" cy="12" r="1" />
+                    </svg>
+                </button>
+
+                <div class="menu oculto" id="menu">
+                    <a href="index.html">Sair</a>
+                </div>
+            </div>
+
+            <!-- CLIENTES -->
+            <section class="secao ativa" id="secao-clientes">
+                <h1>Clientes</h1>
+                <p class="subtitulo">Criar, buscar, atualizar e remover clientes via API.</p>
+
+                <div class="card">
+                    <h2 data-titulo-form>Novo cliente</h2>
+                    <form class="linha-form" id="formCliente" data-tipo="cliente">
+                        <input type="text" name="nome" placeholder="Nome" required>
+                        <input type="email" name="email" placeholder="name@email.com" required>
+
+                        <button type="submit" class="botao">
+                            <svg class="icone-mais" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round">
+                                <path d="M5 12h14" />
+                                <path d="M12 5v14" />
+                            </svg>
+                            <span data-rotulo-botao>Criar</span>
+                        </button>
+
+                        <button type="button" class="botao botao-cancelar" data-cancelar>Cancelar</button>
+                    </form>
+                </div>
+
+                <div class="cabecalho-lista">
+                    <h2 class="titulo-lista">Lista de clientes</h2>
+                    <div class="busca">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <circle cx="11" cy="11" r="7" />
+                            <path d="m20 20-3.5-3.5" />
+                        </svg>
+                        <input type="search" placeholder="Buscar por nome ou email" data-busca="cliente">
+                    </div>
+                </div>
+
+                <div class="card card-tabela">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th class="col-acao"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaClientes"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- USUARIOS -->
+            <section class="secao" id="secao-usuarios">
+                <h1>Usuarios</h1>
+                <p class="subtitulo">Criar, buscar, atualizar e remover usuarios via API.</p>
+
+                <div class="card">
+                    <h2 data-titulo-form>Novo usuario</h2>
+                    <form class="linha-form" id="formUsuario" data-tipo="usuario">
+                        <input type="text" name="nome" placeholder="Nome" required>
+                        <input type="email" name="email" placeholder="name@email.com" required>
+                        <input type="password" name="senha" placeholder="Senha" required>
+
+                        <button type="submit" class="botao">
+                            <svg class="icone-mais" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round">
+                                <path d="M5 12h14" />
+                                <path d="M12 5v14" />
+                            </svg>
+                            <span data-rotulo-botao>Criar</span>
+                        </button>
+
+                        <button type="button" class="botao botao-cancelar" data-cancelar>Cancelar</button>
+                    </form>
+                </div>
+
+                <div class="cabecalho-lista">
+                    <h2 class="titulo-lista">Lista de usuarios</h2>
+                    <div class="busca">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <circle cx="11" cy="11" r="7" />
+                            <path d="m20 20-3.5-3.5" />
+                        </svg>
+                        <input type="search" placeholder="Buscar por nome ou email" data-busca="usuario">
+                    </div>
+                </div>
+
+                <div class="card card-tabela">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th class="col-acao"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaUsuarios"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- VENDAS -->
+            <section class="secao" id="secao-vendas">
+                <h1>Vendas</h1>
+                <p class="subtitulo">Criar, buscar, atualizar e remover vendas mensais via API.</p>
+
+                <div class="card">
+                    <h2 data-titulo-form>Nova venda</h2>
+                    <form class="linha-form" id="formVenda" data-tipo="venda">
+                        <select name="mes" required>
+                            <option value="" disabled selected>Mês</option>
+                            <option value="1">Janeiro</option>
+                            <option value="2">Fevereiro</option>
+                            <option value="3">Março</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Maio</option>
+                            <option value="6">Junho</option>
+                            <option value="7">Julho</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+
+                        <input type="number" name="valorVendido" placeholder="Valor vendido" min="0" step="0.01"
+                            required>
+
+                        <select name="cliente" id="selectCliente" required>
+                            <option value="" disabled selected>Cliente</option>
+                        </select>
+
+                        <button type="submit" class="botao">
+                            <svg class="icone-mais" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round">
+                                <path d="M5 12h14" />
+                                <path d="M12 5v14" />
+                            </svg>
+                            <span data-rotulo-botao>Criar</span>
+                        </button>
+
+                        <button type="button" class="botao botao-cancelar" data-cancelar>Cancelar</button>
+                    </form>
+                </div>
+
+                <div class="cabecalho-lista">
+                    <h2 class="titulo-lista">Lista de vendas</h2>
+                    <div class="busca">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <circle cx="11" cy="11" r="7" />
+                            <path d="m20 20-3.5-3.5" />
+                        </svg>
+                        <input type="search" placeholder="Buscar por mês ou cliente" data-busca="venda">
+                    </div>
+                </div>
+
+                <div class="card card-tabela">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mês</th>
+                                <th>Valor</th>
+                                <th>Cliente</th>
+                                <th class="col-acao"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaVendas"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>
