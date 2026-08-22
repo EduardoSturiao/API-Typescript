@@ -143,6 +143,26 @@ body {
     display: none;
 }
 
+.mensagem {
+    max-width: 760px;
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.mensagem.erro {
+    background-color: rgba(255, 95, 95, 0.12);
+    border: 1px solid rgba(255, 95, 95, 0.3);
+    color: var(--perigo);
+}
+
+.mensagem.sucesso {
+    background-color: rgba(109, 140, 255, 0.12);
+    border: 1px solid rgba(109, 140, 255, 0.3);
+    color: var(--accent);
+}
+
 .secao {
     display: none;
     max-width: 760px;
@@ -294,32 +314,6 @@ body {
     border-color: #3d3d3d;
 }
 
-/* modo edição: some o "+", aparece o "Cancelar" */
-
-.botao-cancelar {
-    display: none;
-    font-weight: 500;
-    color: var(--muted);
-}
-
-.linha-form.editando .icone-mais {
-    display: none;
-}
-
-.linha-form.editando .botao-cancelar {
-    display: flex;
-}
-
-.linha-form.editando button[type="submit"] {
-    background-color: var(--accent);
-    border-color: var(--accent);
-    color: #10132b;
-}
-
-.linha-form.editando button[type="submit"]:hover {
-    background-color: #8aa2ff;
-}
-
 /* ---------- TABELA ---------- */
 
 .card-tabela {
@@ -359,47 +353,27 @@ td:not(:first-child) {
 }
 
 .col-acao {
-    width: 80px;
+    width: 50px;
 }
 
-.acoes {
-    display: flex;
-    justify-content: flex-end;
-    gap: 4px;
-}
-
-.botao-icone {
+.botao-excluir {
     display: flex;
     background: none;
     border: none;
     border-radius: 6px;
     padding: 5px;
-    color: var(--muted);
-    cursor: pointer;
-    transition: background-color 0.15s, color 0.15s;
-}
-
-.botao-icone:hover {
-    background-color: var(--surface-2);
-    color: var(--text);
-}
-
-.botao-icone svg {
-    width: 16px;
-    height: 16px;
-}
-
-.botao-excluir {
     color: var(--perigo);
+    cursor: pointer;
+    transition: background-color 0.15s;
 }
 
 .botao-excluir:hover {
     background-color: rgba(255, 95, 95, 0.12);
-    color: var(--perigo);
 }
 
-tr.em-edicao {
-    background-color: rgba(109, 140, 255, 0.08);
+.botao-excluir svg {
+    width: 16px;
+    height: 16px;
 }
 
 .vazio {

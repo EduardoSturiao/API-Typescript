@@ -62,27 +62,27 @@
                 </div>
             </div>
 
+            <p class="mensagem oculto" id="mensagem"></p>
+
             <!-- CLIENTES -->
             <section class="secao ativa" id="secao-clientes">
                 <h1>Clientes</h1>
-                <p class="subtitulo">Criar, buscar, atualizar e remover clientes via API.</p>
+                <p class="subtitulo">Criar, listar e remover clientes via API.</p>
 
                 <div class="card">
-                    <h2 data-titulo-form>Novo cliente</h2>
+                    <h2>Novo cliente</h2>
                     <form class="linha-form" id="formCliente" data-tipo="cliente">
                         <input type="text" name="nome" placeholder="Nome" required>
                         <input type="email" name="email" placeholder="name@email.com" required>
 
                         <button type="submit" class="botao">
-                            <svg class="icone-mais" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round">
                                 <path d="M5 12h14" />
                                 <path d="M12 5v14" />
                             </svg>
-                            <span data-rotulo-botao>Criar</span>
+                            Criar
                         </button>
-
-                        <button type="button" class="botao botao-cancelar" data-cancelar>Cancelar</button>
                     </form>
                 </div>
 
@@ -94,7 +94,7 @@
                             <circle cx="11" cy="11" r="7" />
                             <path d="m20 20-3.5-3.5" />
                         </svg>
-                        <input type="search" placeholder="Buscar por nome ou email" data-busca="cliente">
+                        <input type="search" placeholder="Filtrar por nome ou email" data-busca="cliente">
                     </div>
                 </div>
 
@@ -115,25 +115,23 @@
             <!-- USUARIOS -->
             <section class="secao" id="secao-usuarios">
                 <h1>Usuarios</h1>
-                <p class="subtitulo">Criar, buscar, atualizar e remover usuarios via API.</p>
+                <p class="subtitulo">Criar e listar usuarios via API.</p>
 
                 <div class="card">
-                    <h2 data-titulo-form>Novo usuario</h2>
+                    <h2>Novo usuario</h2>
                     <form class="linha-form" id="formUsuario" data-tipo="usuario">
                         <input type="text" name="nome" placeholder="Nome" required>
                         <input type="email" name="email" placeholder="name@email.com" required>
                         <input type="password" name="senha" placeholder="Senha" required>
 
                         <button type="submit" class="botao">
-                            <svg class="icone-mais" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round">
                                 <path d="M5 12h14" />
                                 <path d="M12 5v14" />
                             </svg>
-                            <span data-rotulo-botao>Criar</span>
+                            Criar
                         </button>
-
-                        <button type="button" class="botao botao-cancelar" data-cancelar>Cancelar</button>
                     </form>
                 </div>
 
@@ -145,7 +143,7 @@
                             <circle cx="11" cy="11" r="7" />
                             <path d="m20 20-3.5-3.5" />
                         </svg>
-                        <input type="search" placeholder="Buscar por nome ou email" data-busca="usuario">
+                        <input type="search" placeholder="Filtrar por nome ou email" data-busca="usuario">
                     </div>
                 </div>
 
@@ -155,7 +153,6 @@
                             <tr>
                                 <th>Nome</th>
                                 <th>Email</th>
-                                <th class="col-acao"></th>
                             </tr>
                         </thead>
                         <tbody id="tabelaUsuarios"></tbody>
@@ -166,10 +163,10 @@
             <!-- VENDAS -->
             <section class="secao" id="secao-vendas">
                 <h1>Vendas</h1>
-                <p class="subtitulo">Criar, buscar, atualizar e remover vendas mensais via API.</p>
+                <p class="subtitulo">Criar, listar e remover vendas mensais via API.</p>
 
                 <div class="card">
-                    <h2 data-titulo-form>Nova venda</h2>
+                    <h2>Nova venda</h2>
                     <form class="linha-form" id="formVenda" data-tipo="venda">
                         <select name="mes" required>
                             <option value="" disabled selected>Mês</option>
@@ -195,15 +192,13 @@
                         </select>
 
                         <button type="submit" class="botao">
-                            <svg class="icone-mais" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round">
                                 <path d="M5 12h14" />
                                 <path d="M12 5v14" />
                             </svg>
-                            <span data-rotulo-botao>Criar</span>
+                            Criar
                         </button>
-
-                        <button type="button" class="botao botao-cancelar" data-cancelar>Cancelar</button>
                     </form>
                 </div>
 
@@ -215,7 +210,7 @@
                             <circle cx="11" cy="11" r="7" />
                             <path d="m20 20-3.5-3.5" />
                         </svg>
-                        <input type="search" placeholder="Buscar por mês ou cliente" data-busca="venda">
+                        <input type="search" placeholder="Filtrar por mês ou cliente" data-busca="venda">
                     </div>
                 </div>
 

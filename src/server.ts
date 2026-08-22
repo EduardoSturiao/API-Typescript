@@ -1,4 +1,4 @@
-import express, {type Request, type Response} from 'express'
+import express, {type Request, type Response, type NextFunction} from 'express'
 import { connectDB } from "./config/db.ts";
 import vendaMensalRouter from './routes/vendaMensalRouter.ts'
 import clienteRouter from './routes/clienteRouter.ts'
@@ -8,6 +8,16 @@ const app = express()
 const port = 3000
 
 app.use(express.json())
+
+// libera o client (client/dashboard.html), que roda em outra origem, para
+// chamar as rotas já existentes abaixo
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type')
+  if (req.method === 'OPTIONS') return res.sendStatus(204)
+  next()
+})
 
 app.use('/usuarios', usuarioRouter)
 app.use('/vendas', vendaMensalRouter)

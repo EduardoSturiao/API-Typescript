@@ -17,9 +17,11 @@ export class DeleteClienteController {
       if (!clienteExcluido) {
         return res.status(404).json({ mensagem: "Cliente não encontrado" });
       }
+
+      res.json(clienteExcluido);
     } catch (error) {
         if(error instanceof Error){
-            res.status(400).json({mensagem: 'error.message'})
+            res.status(400).json({mensagem: error.message})
         }else{
             res.status(400).json({mensagem: 'Erro desconhecido'})
         }

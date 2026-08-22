@@ -1,50 +1,30 @@
 // ============================================================
-// Camada visual apenas. Os dados abaixo são de exemplo e ficam
-// só na memória do navegador — trocar pelas chamadas da API
-// nos pontos marcados com "API:".
+// Camada visual + integração com a API já existente no projeto.
+// Nenhuma rota nova é chamada aqui — só POST/GET/DELETE dos
+// endpoints que já existem em src/routes/.
 // ============================================================
 
-const clientes = [
-    { id: "1", nome: "Eduardo Sturiao", email: "eduardo@email.com" },
-    { id: "2", nome: "Cliente Exemplo", email: "cliente@email.com" },
-];
+const API_URL = "http://localhost:3000";
 
-const usuarios = [
-    { id: "1", nome: "Admin", email: "admin@email.com" },
-];
+const ROTAS = { cliente: "clientes", usuario: "usuarios", venda: "vendas" };
 
-const vendas = [
-    { id: "1", mes: 1, valorVendido: 1500, cliente: "1" },
-];
+let clientes = [];
+let usuarios = [];
+let vendas = [];
 
 const listas = { cliente: clientes, usuario: usuarios, venda: vendas };
 
-// id do item sendo editado em cada seção (null = criando um novo)
-const emEdicao = { cliente: null, usuario: null, venda: null };
-
-// texto digitado em cada campo de busca
+// texto digitado em cada campo de filtro (filtro é só na tela)
 const busca = { cliente: "", usuario: "", venda: "" };
 
 const MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
     "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-
-const TITULOS = {
-    cliente: { novo: "Novo cliente", editar: "Editar cliente" },
-    usuario: { novo: "Novo usuario", editar: "Editar usuario" },
-    venda: { novo: "Nova venda", editar: "Editar venda" },
-};
 
 const FORMULARIOS = {
     cliente: document.querySelector("#formCliente"),
     usuario: document.querySelector("#formUsuario"),
     venda: document.querySelector("#formVenda"),
 };
-
-const ICONE_LAPIS = `
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 20h9"/>
-        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
-    </svg>`;
 
 const ICONE_LIXEIRA = `
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -76,22 +56,84 @@ document.querySelector("#menuBotao").addEventListener("click", (evento) => {
 
 document.addEventListener("click", () => menu.classList.add("oculto"));
 
+// ---------- MENSAGEM DE STATUS (erro/sucesso das chamadas à API) ----------
+
+const elMensagem = document.querySelector("#mensagem");
+let timerMensagem = null;
+
+function mostrarMensagem(texto, tipo = "erro") {
+    elMensagem.textContent = texto;
+    elMensagem.className = `mensagem ${tipo}`;
+    clearTimeout(timerMensagem);
+    timerMensagem = setTimeout(() => elMensagem.classList.add("oculto"), 4000);
+}
+
+// ---------- CHAMADAS À API ----------
+
+async function api(caminho, opcoes = {}) {
+    const controlador = new AbortController();
+    const tempoLimite = setTimeout(() => controlador.abort(), 10000);
+
+    let resposta;
+    try {
+        resposta = await fetch(`${API_URL}${caminho}`, {
+            headers: { "Content-Type": "application/json" },
+            signal: controlador.signal,
+            ...opcoes,
+        });
+    } catch (erro) {
+        throw new Error(erro.name === "AbortError"
+            ? "O servidor demorou demais para responder."
+            : `Não foi possível conectar à API em ${API_URL}. Ela está rodando (npm run dev)?`);
+    } finally {
+        clearTimeout(tempoLimite);
+    }
+
+    let corpo = null;
+    try { corpo = await resposta.json(); } catch { /* resposta sem corpo (ex.: delete) */ }
+
+    if (!resposta.ok) {
+        throw new Error(corpo?.mensagem || `Erro ${resposta.status} ao comunicar com a API.`);
+    }
+
+    return corpo;
+}
+
+async function carregarClientes() {
+    const dados = await api("/clientes");
+    clientes.length = 0;
+    clientes.push(...dados);
+}
+
+async function carregarUsuarios() {
+    const dados = await api("/usuarios");
+    usuarios.length = 0;
+    usuarios.push(...dados);
+}
+
+async function carregarVendas() {
+    const dados = await api("/vendas");
+    vendas.length = 0;
+    vendas.push(...dados);
+}
+
+async function carregarTudo() {
+    try {
+        await Promise.all([carregarClientes(), carregarUsuarios(), carregarVendas()]);
+    } catch (erro) {
+        mostrarMensagem(erro.message);
+    }
+    renderizarTudo();
+}
+
 // ---------- HELPERS ----------
 
-function acoes(tipo, id) {
-    return `
-        <div class="acoes">
-            <button class="botao-icone" data-editar data-tipo="${tipo}" data-id="${id}" aria-label="Editar">${ICONE_LAPIS}</button>
-            <button class="botao-icone botao-excluir" data-excluir data-tipo="${tipo}" data-id="${id}" aria-label="Excluir">${ICONE_LIXEIRA}</button>
-        </div>`;
+function botaoExcluir(tipo, id) {
+    return `<button class="botao-excluir" data-excluir data-tipo="${tipo}" data-id="${id}" aria-label="Excluir">${ICONE_LIXEIRA}</button>`;
 }
 
 function linhaVazia(colunas, texto) {
     return `<tr><td colspan="${colunas}" class="vazio">${texto}</td></tr>`;
-}
-
-function classeLinha(tipo, id) {
-    return emEdicao[tipo] === id ? ' class="em-edicao"' : "";
 }
 
 function moeda(valor) {
@@ -105,55 +147,51 @@ function contem(texto, termo) {
 // ---------- RENDERIZAÇÃO DAS TABELAS ----------
 
 function renderizarClientes() {
-    // API: para buscar no servidor, trocar por GET /clientes?nome=<busca.cliente>
     const filtrados = clientes.filter((cliente) =>
         contem(cliente.nome, busca.cliente) || contem(cliente.email, busca.cliente));
 
     document.querySelector("#tabelaClientes").innerHTML = filtrados.length === 0
         ? linhaVazia(3, busca.cliente ? "Nenhum cliente encontrado." : "Nenhum cliente cadastrado.")
         : filtrados.map((cliente) => `
-            <tr${classeLinha("cliente", cliente.id)}>
+            <tr>
                 <td>${cliente.nome}</td>
                 <td>${cliente.email}</td>
-                <td>${acoes("cliente", cliente.id)}</td>
+                <td>${botaoExcluir("cliente", cliente._id)}</td>
             </tr>`).join("");
 
     renderizarSelectClientes();
 }
 
 function renderizarUsuarios() {
-    // API: para buscar no servidor, trocar por GET /usuarios?nome=<busca.usuario>
     const filtrados = usuarios.filter((usuario) =>
         contem(usuario.nome, busca.usuario) || contem(usuario.email, busca.usuario));
 
     document.querySelector("#tabelaUsuarios").innerHTML = filtrados.length === 0
-        ? linhaVazia(3, busca.usuario ? "Nenhum usuario encontrado." : "Nenhum usuario cadastrado.")
+        ? linhaVazia(2, busca.usuario ? "Nenhum usuario encontrado." : "Nenhum usuario cadastrado.")
         : filtrados.map((usuario) => `
-            <tr${classeLinha("usuario", usuario.id)}>
+            <tr>
                 <td>${usuario.nome}</td>
                 <td>${usuario.email}</td>
-                <td>${acoes("usuario", usuario.id)}</td>
             </tr>`).join("");
 }
 
 function renderizarVendas() {
     const nomeCliente = (id) => {
-        const cliente = clientes.find((item) => item.id === id);
+        const cliente = clientes.find((item) => item._id === id);
         return cliente ? cliente.nome : "-";
     };
 
-    // API: para buscar no servidor, trocar por GET /vendas?cliente=<busca.venda>
     const filtradas = vendas.filter((venda) =>
         contem(MESES[venda.mes - 1], busca.venda) || contem(nomeCliente(venda.cliente), busca.venda));
 
     document.querySelector("#tabelaVendas").innerHTML = filtradas.length === 0
         ? linhaVazia(4, busca.venda ? "Nenhuma venda encontrada." : "Nenhuma venda cadastrada.")
         : filtradas.map((venda) => `
-            <tr${classeLinha("venda", venda.id)}>
+            <tr>
                 <td>${MESES[venda.mes - 1]}</td>
                 <td>${moeda(venda.valorVendido)}</td>
                 <td>${nomeCliente(venda.cliente)}</td>
-                <td>${acoes("venda", venda.id)}</td>
+                <td>${botaoExcluir("venda", venda._id)}</td>
             </tr>`).join("");
 }
 
@@ -163,7 +201,7 @@ function renderizarSelectClientes() {
 
     select.innerHTML = `<option value="" disabled ${selecionado ? "" : "selected"}>Cliente</option>`
         + clientes.map((cliente) =>
-            `<option value="${cliente.id}" ${cliente.id === selecionado ? "selected" : ""}>${cliente.nome}</option>`).join("");
+            `<option value="${cliente._id}" ${cliente._id === selecionado ? "selected" : ""}>${cliente.nome}</option>`).join("");
 }
 
 function renderizarTudo() {
@@ -172,7 +210,7 @@ function renderizarTudo() {
     renderizarVendas();
 }
 
-// ---------- BUSCA ----------
+// ---------- FILTRO DA LISTA (só na tela, sem chamar a API) ----------
 
 document.querySelectorAll("[data-busca]").forEach((campo) => {
     campo.addEventListener("input", () => {
@@ -181,56 +219,7 @@ document.querySelectorAll("[data-busca]").forEach((campo) => {
     });
 });
 
-// ---------- MODO DE EDIÇÃO ----------
-
-function abrirEdicao(tipo, id) {
-    const item = listas[tipo].find((registro) => registro.id === id);
-    const form = FORMULARIOS[tipo];
-
-    // API: se preferir buscar o registro atualizado, GET /<recurso>/:id antes de preencher
-    Object.entries(item).forEach(([chave, valor]) => {
-        const campo = form.elements[chave];
-        if (campo) campo.value = valor;
-    });
-
-    emEdicao[tipo] = id;
-    form.classList.add("editando");
-    form.closest(".card").querySelector("[data-titulo-form]").textContent = TITULOS[tipo].editar;
-    form.querySelector("[data-rotulo-botao]").textContent = "Salvar";
-
-    // senha não volta da API — em edição ela deixa de ser obrigatória
-    if (form.elements.senha) {
-        form.elements.senha.value = "";
-        form.elements.senha.required = false;
-        form.elements.senha.placeholder = "Nova senha (opcional)";
-    }
-
-    form.elements[0].focus();
-    renderizarTudo();
-}
-
-function cancelarEdicao(tipo) {
-    const form = FORMULARIOS[tipo];
-
-    emEdicao[tipo] = null;
-    form.reset();
-    form.classList.remove("editando");
-    form.closest(".card").querySelector("[data-titulo-form]").textContent = TITULOS[tipo].novo;
-    form.querySelector("[data-rotulo-botao]").textContent = "Criar";
-
-    if (form.elements.senha) {
-        form.elements.senha.required = true;
-        form.elements.senha.placeholder = "Senha";
-    }
-
-    renderizarTudo();
-}
-
-document.querySelectorAll("[data-cancelar]").forEach((botao) => {
-    botao.addEventListener("click", () => cancelarEdicao(botao.closest("form").dataset.tipo));
-});
-
-// ---------- CRIAR / ATUALIZAR ----------
+// ---------- CRIAR ----------
 
 function dadosDoForm(form) {
     const dados = Object.fromEntries(new FormData(form));
@@ -243,60 +232,46 @@ function dadosDoForm(form) {
     return dados;
 }
 
-// a senha vai no corpo da requisição, mas não fica guardada na lista da tela
-function semSenha({ senha, ...resto }) {
-    return resto;
-}
-
-function novoId() {
-    return String(Date.now()) + Math.random().toString(16).slice(2, 6);
-}
-
 Object.entries(FORMULARIOS).forEach(([tipo, form]) => {
-    form.addEventListener("submit", (evento) => {
+    form.addEventListener("submit", async (evento) => {
         evento.preventDefault();
 
         const dados = dadosDoForm(form);
-        const lista = listas[tipo];
+        const botao = form.querySelector("button[type=submit]");
+        botao.disabled = true;
 
-        if (emEdicao[tipo]) {
-            // API: PUT /<recurso>/:id com "dados" no corpo
-            const indice = lista.findIndex((item) => item.id === emEdicao[tipo]);
-            lista[indice] = { ...lista[indice], ...semSenha(dados) };
-            cancelarEdicao(tipo);
-            return;
+        try {
+            await api(`/${ROTAS[tipo]}`, { method: "POST", body: JSON.stringify(dados) });
+            form.reset();
+            mostrarMensagem("Salvo com sucesso.", "sucesso");
+            await carregarTudo();
+        } catch (erro) {
+            mostrarMensagem(erro.message);
+        } finally {
+            botao.disabled = false;
         }
-
-        // API: POST /<recurso> com "dados" no corpo
-        lista.push({ id: novoId(), ...semSenha(dados) });
-
-        form.reset();
-        renderizarTudo();
     });
 });
 
-// ---------- AÇÕES DA TABELA ----------
+// ---------- EXCLUIR ----------
 
-document.addEventListener("click", (evento) => {
-    const editar = evento.target.closest("[data-editar]");
-    if (editar) {
-        abrirEdicao(editar.dataset.tipo, editar.dataset.id);
-        return;
+document.addEventListener("click", async (evento) => {
+    const botao = evento.target.closest("[data-excluir]");
+    if (!botao) return;
+
+    const { tipo, id } = botao.dataset;
+    botao.disabled = true;
+
+    try {
+        await api(`/${ROTAS[tipo]}/${id}`, { method: "DELETE" });
+        mostrarMensagem("Removido com sucesso.", "sucesso");
+        await carregarTudo();
+    } catch (erro) {
+        mostrarMensagem(erro.message);
+        botao.disabled = false;
     }
-
-    const excluir = evento.target.closest("[data-excluir]");
-    if (!excluir) return;
-
-    const { tipo, id } = excluir.dataset;
-
-    // API: DELETE /<recurso>/:id
-    const lista = listas[tipo];
-    lista.splice(lista.findIndex((item) => item.id === id), 1);
-
-    if (emEdicao[tipo] === id) cancelarEdicao(tipo);
-    renderizarTudo();
 });
 
 // ---------- INICIALIZAÇÃO ----------
 
-renderizarTudo();
+carregarTudo();
