@@ -4,7 +4,9 @@
 // endpoints que já existem em src/routes/.
 // ============================================================
 
-const API_URL = "http://localhost:3000";
+// caminho relativo: funciona tanto local (npm run dev) quanto em produção,
+// já que o servidor agora também serve estes arquivos estáticos
+const API_URL = "";
 
 const ROTAS = { cliente: "clientes", usuario: "usuarios", venda: "vendas" };
 

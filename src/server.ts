@@ -1,13 +1,18 @@
 import express, {type Request, type Response, type NextFunction} from 'express'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import { connectDB } from "./config/db.ts";
 import vendaMensalRouter from './routes/vendaMensalRouter.ts'
 import clienteRouter from './routes/clienteRouter.ts'
 import usuarioRouter from './routes/usuarioRouter.ts'
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
 const app = express()
 const port = 3000
 
 app.use(express.json())
+app.use(express.static(path.join(__dirname, '../client')))
 
 // libera o client (client/dashboard.html), que roda em outra origem, para
 // chamar as rotas já existentes abaixo
@@ -23,8 +28,6 @@ app.use('/usuarios', usuarioRouter)
 app.use('/vendas', vendaMensalRouter)
 app.use('/clientes', clienteRouter)
 
-app.get('/', (req: Request, res: Response)=> res.send('Bem vindo ao banco de dados'))
-
 const startServer = async()=>{
   await connectDB()
 
@@ -32,5 +35,7 @@ const startServer = async()=>{
 }
 
 startServer()
+
+export default app
 
 

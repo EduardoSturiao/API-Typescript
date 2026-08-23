@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "src/server.ts", "use": "@vercel/node" },
+    { "src": "client/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/clientes(/.*)?", "dest": "/src/server.ts" },
+    { "src": "/usuarios(/.*)?", "dest": "/src/server.ts" },
+    { "src": "/vendas(/.*)?", "dest": "/src/server.ts" },
+    { "src": "/", "dest": "/client/index.html" },
+    { "src": "/(.*)", "dest": "/client/$1" }
+  ]
+}
