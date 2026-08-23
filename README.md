@@ -1,6 +1,6 @@
 -> API-Typescript
 
-API REST em Node.js + Express + TypeScript + MongoDB (Mongoose), com autenticação via JWT. Gerencia **clientes**, **usuários** e **vendas mensais**.
+API REST em Node.js + Express + TypeScript + MongoDB (Mongoose). Gerencia **clientes**, **usuários** e **vendas mensais**, com uma interface web simples já integrada (`client/`).
 
 -> Requisitos
 
@@ -23,21 +23,32 @@ JWT_SECRET=um_segredo_qualquer
 -> Rodando
 
 ```bash
-npm run dev        # inicia o servidor com watch ou nodemon (sua preferencia)
+npm run dev        # inicia o servidor com watch
 npm run typecheck  # checa erros de tipo sem rodar
 ```
 
-Servidor sobe em `http://localhost:3000`.
+Servidor sobe em `http://localhost:3000`. Esse mesmo endereço já serve a interface — não é preciso abrir os arquivos de `client/` separadamente.
 
--> Autenticação
+-> Testando pela interface
 
-Rotas protegidas exigem o token no header:
+Já tem uma versão publicada, sem precisar instalar nada:
+
+**https://api-typescript-coral.vercel.app/**
+
+Ou, rodando localmente (`npm run dev`), acesse `http://localhost:3000`.
+
+Em qualquer um dos dois, faça login com o usuário de teste fixo da tela:
 
 ```
-Authorization: Bearer SEU_TOKEN_AQUI
+Usuário: admin
+Senha:   123
 ```
 
-O token é obtido via `POST /usuarios/login`.
+No painel, crie/liste/exclua clientes, usuários e vendas — cada ação já chama a API real e reflete direto no MongoDB.
+
+Esse login é só uma trava de tela (fica no `client/script.js`, não existe rota de autenticação na API ainda) — ele não protege as rotas da API. Por isso, a versão publicada usa um banco MongoDB separado, só de demonstração (`bancoCRUDteste`), diferente do banco usado em desenvolvimento local: fique à vontade pra testar sem risco de mexer em dados reais.
+
+As chamadas feitas pelo painel usam exatamente os endpoints abaixo.
 
 -- Endpoints
 
@@ -51,26 +62,17 @@ O token é obtido via `POST /usuarios/login`.
 
  GET | `/usuarios` | - |
  POST | `/usuarios` | `{ "nome": "string", "email": "string", "senha": "string" }` |
- POST | `/usuarios/login` | `{ "email": "string", "senha": "string" }` |
 
--> Vendas mensais (`/vendas`) (token necessario aqui)
+-> Vendas mensais (`/vendas`)
 
- GET | `/vendas?mes=&pagina=&limite=&ordem=maior` | - | ✅ |
- POST | `/vendas` | `{ "cliente": "id_do_cliente", "mes": 1-12, "valorVendido": number }` | - |
- PUT | `/vendas/:id` | campos a atualizar | - |
- DELETE | `/vendas/:id` | - | - |
+ GET | `/vendas` | - |
+ POST | `/vendas` | `{ "cliente": "id_do_cliente", "mes": 1-12, "valorVendido": number }` |
+ DELETE | `/vendas/:id` | - |
 
--> testes sugeridos
+-> Deploy
 
-1. `GET /` — confirma que o servidor está no ar
-2. `POST /clientes` — cria um cliente e guarda o `_id`
-3. `POST /usuarios` — cadastra um usuário
-4. `POST /usuarios/login` — pega o token JWT
-5. `POST /vendas` — cria uma venda usando o `_id` do cliente
-6. `GET /vendas` — com o token no header `Authorization`, confere paginação e `populate` do cliente
-7. `PUT /vendas/:id` — atualiza a venda
-8. `DELETE /clientes/:id` — deleta o cliente e confirma que suas vendas somem junto (cascade delete)
+O projeto já tem `vercel.json` configurado: a API sobe como serverless function e o `client/` é servido como estático, tudo na mesma URL. Basta configurar `MONGO_URI` e `JWT_SECRET` nas Environment Variables do projeto no Vercel antes do deploy.
 
 -> Stack
 
-Express 5 · TypeScript 6 · Mongoose · JWT · bcrypt
+Express 5 · TypeScript 6 · Mongoose · bcrypt
